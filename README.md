@@ -62,7 +62,7 @@ Frontend: https://github.com/LizaPoznyak/umograd-frontend Содержит SPA-�
 
 ### Схема данных
 
-<img width="1109" height="1179" alt="{FEBF005B-7CDB-47C0-AD4C-CCDE8FE0618D}" src="https://github.com/user-attachments/assets/09ac6d3a-b51c-4b09-a57b-0d1f05622ab0" />
+<img width="1143" height="1113" alt="{839464CE-ED02-4A4F-B030-C5E298894300}" src="https://github.com/user-attachments/assets/2937a30f-f9c8-42df-9c1c-43830a4c3cb7" />
 
 ---
 
