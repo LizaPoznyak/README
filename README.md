@@ -106,7 +106,101 @@ Frontend: https://github.com/LizaPoznyak/umograd-frontend Содержит SPA-�
 
 ### Безопасность
 
-Описать подходы, использованные для обеспечения безопасности, включая описание процессов аутентификации и авторизации с примерами кода из репозитория сервера
+В системе реализованы современные механизмы обеспечения безопасности, включающие аутентификацию и авторизацию пользователей, а также защиту данных.
+
+## Аутентификация (JWT)
+
+Аутентификация реализована на основе **JSON Web Token (JWT)**.  
+При успешном входе пользователю выдаются два токена:
+
+- **accessToken** — используется для авторизации запросов к защищённым ресурсам;
+- **refreshToken** — используется для обновления `accessToken` без повторного ввода учётных данных.
+
+Структура токенов упрощена: они содержат только необходимые поля (`id`, `username`, `roles`, `birthDate`), что исключает хранение тяжёлых данных (например, аватара в base64). Это положительно сказывается на производительности и безопасности.
+
+### Пример генерации токенов на сервере
+
+```
+public String generateAccessToken(Long userId, String username, LocalDate birthDate, UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("username", username);
+        claims.put("roles", userDetails.getAuthorities()
+                .stream()
+                .map(a -> a.getAuthority())
+                .toList());
+        if (birthDate != null) {
+            claims.put("birthDate", birthDate.toString()); // ISO-строка
+        }
+        return createToken(claims, userId.toString(), accessTokenValidity);
+    }
+
+public String generateRefreshToken(Long userId, String username, LocalDate birthDate, UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("username", username);
+        claims.put("roles", userDetails.getAuthorities()
+                .stream()
+                .map(a -> a.getAuthority())
+                .toList());
+        if (birthDate != null) {
+            claims.put("birthDate", birthDate.toString());
+        }
+        return createToken(claims, userId.toString(), refreshTokenValidity);
+    }
+```
+
+Механизм обновления токенов реализован через эндпоинт /auth/refresh. Клиентский перехватчик (axios interceptor) автоматически вызывает его при получении ответа 401 Unauthorized, сохраняет новые токены и повторяет исходный запрос.
+
+## Авторизация (RBAC)
+
+Авторизация реализована по принципу Role‑Based Access Control (RBAC). На стороне сервера доступ к ресурсам разграничен через конфигурацию Spring Security:
+
+```
+.requestMatchers("/api/v1/moderator/**").hasRole("MODERATOR")
+.requestMatchers("/api/v1/parent/**").hasRole("PARENT")
+.requestMatchers("/api/v1/child/**").hasRole("CHILD")
+.anyRequest().authenticated()
+```
+
+На фронтенде роли сериализуются в JWT и используются для маршрутизации и отображения компонентов:
+
+```
+let homePath = "/";
+if (profile.roles.includes("ROLE_MODERATOR")) {
+    homePath = "/users";
+} else if (profile.roles.includes("ROLE_PARENT")) {
+    homePath = "/children";
+} else if (profile.roles.includes("ROLE_CHILD")) {
+    homePath = "/child";
+}
+```
+
+## Защита данных
+
+Пароли хранятся в базе в зашифрованном виде с использованием BCryptPasswordEncoder:
+
+```
+@Bean
+public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+}
+```
+
+JWT‑токены подписываются секретным ключом, что исключает возможность их подделки.
+
+Для разработки настроен CORS, разрешающий запросы с фронтенда (http://localhost:5173).
+
+Архитектура разделена: JWT используется только для идентификации и передачи «лёгких» данных, а полный профиль пользователя загружается отдельным API‑запросом.
+
+Включена методовая безопасность (@EnableMethodSecurity), что позволяет использовать аннотации @PreAuthorize для ограничения доступа на уровне методов:
+
+```
+@GetMapping("/for-child")
+@PreAuthorize("hasRole('CHILD')")
+public List<TaskDto> listForChild(@RequestParam int age,
+                                  @RequestParam(required = false) String difficulty) {
+    return listTasksForChildHandler.handle(new ListTasksForChildQuery(age, difficulty));
+}
+```
 
 ### Оценка качества кода
 
