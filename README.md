@@ -64,6 +64,18 @@ Frontend: https://github.com/LizaPoznyak/umograd-frontend Содержит SPA-�
 
 <img width="1245" height="864" alt="{334D806F-A044-478C-9ECA-7BF5F335C8A2}" src="https://github.com/user-attachments/assets/fb944d9e-4d49-4beb-afc4-3d26ce85e2ba" />
 
+<img width="759" height="864" alt="image" src="https://github.com/user-attachments/assets/79c16ff1-21c3-4759-be53-43ade113700d" />
+
+<img width="975" height="614" alt="image" src="https://github.com/user-attachments/assets/e36f3276-bcd9-42e7-bdf8-c91ad29763ee" />
+
+<img width="975" height="613" alt="image" src="https://github.com/user-attachments/assets/47c61855-8a73-47df-92cb-c99bdb5824d8" />
+
+<img width="921" height="1363" alt="image" src="https://github.com/user-attachments/assets/84fc0e2b-d868-4356-8ce6-bde7f962415e" />
+
+<img width="975" height="882" alt="image" src="https://github.com/user-attachments/assets/861134ae-8993-4c4e-87d9-e8372bfb8007" />
+
+<img width="975" height="463" alt="image" src="https://github.com/user-attachments/assets/113c7b94-e354-4f68-8d18-e9c7bcf00a59" />
+
 ---
 
 ## **Функциональные возможности**
