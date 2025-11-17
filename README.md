@@ -234,13 +234,56 @@ public List<TaskDto> listForChild(@RequestParam int age,
 
 ## **Установка и  запуск**
 
-### Манифесты для сборки docker образов
+Требования к окружению. Для развёртывания системы пользователю необходимо:  
+* операционная система: Windows, Linux или macOS;
+* установленное ПО: JDK 21+, Maven 3.9+, Node.js 18+ (npm), MySQL 8+;  
+* свободные порты: 3306 – база данных, 8080 – backend, 8181 – content‑service, 8282 – analytics‑service, 5173 – frontend.
+  
+Подготовка базы данных. Для работы системы необходимо создать базы данных и пользователя. Скрипт init.sql: 
+```
+CREATE DATABASE IF NOT EXISTS umograd CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS content_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+Выполнить скрипт можно командой:  
+```
+mysql -u root -p < init.sql
+```
+Пошаговое развёртывание:
 
-Представить весь код манифестов или ссылки на файлы с ними (при необходимости снабдить комментариями)
+1  Запуск MySQL и подготовка схем. Убедиться, что MySQL запущен. Выполнить скрипт init.sql.  
 
-### Манифесты для развертывания k8s кластера
+2  Сборка и запуск backend:
+```   
+cd umograd-backend
+mvn clean package
+java -jar target/umograd-backend-0.0.1-SNAPSHOT.jar
+```   
+Доступ: http://localhost:8080.
 
-Представить весь код манифестов или ссылки на файлы с ними (при необходимости снабдить комментариями)
+3  Сборка и запуск content‑service:
+```   
+cd content-service
+mvn clean package
+java -jar target/content-service-0.0.1-SNAPSHOT.jar
+```   
+Доступ: http://localhost:8181.
+
+4  Сборка и запуск analytics‑service:
+```   
+cd analytics-service
+mvn clean package
+java -jar target/analytics-service-0.0.1-SNAPSHOT.jar
+```   
+Доступ: http://localhost:8282.
+
+5  Сборка и запуск frontend:
+```   
+cd frontend
+npm install
+npm run build
+npm run preview
+```   
+Доступ: http://localhost:5173.
 
 ---
 
